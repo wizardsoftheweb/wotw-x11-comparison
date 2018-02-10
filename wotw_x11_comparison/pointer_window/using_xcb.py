@@ -52,7 +52,7 @@ class XcbPointerWindow(BasePointerWindow):
         self.logger.debug("Setup: %s", setup)
         return [connection, setup]
 
-    def get_root_window(self, lib_secondary):
+    def get_root_window(self, lib_primary, lib_secondary):
         self.logger.debug('Discovering the root window')
         return lib_secondary.roots[0].root
 
