@@ -142,3 +142,34 @@ class MoveToRandomPositionInWindowUnitTests(MovesMouseTestCase):
             ),
             call.flush()
         ])
+
+
+class WarpToRandomWindowUnitTests(MovesMouseTestCase):
+    WINDOW = 24
+    ROOT_WINDOW = 17
+
+    @patch.object(
+        MovesMouse,
+        'choose_a_random_window',
+        return_value=WINDOW
+    )
+    @patch.object(
+        MovesMouse,
+        'move_to_random_position_in_window'
+    )
+    def test_full_warp(self, mock_move, mock_choose):
+        mock_holder = MagicMock()
+        mock_holder.attach_mock(
+            mock_choose,
+            'choose_a_random_window'
+        )
+        mock_holder.attach_mock(
+            mock_move,
+            'move_to_random_position_in_window'
+        )
+        connection = MagicMock()
+        self.mover.warp_to_random_window(connection, self.ROOT_WINDOW)
+        mock_holder.assert_has_calls([
+            call.choose_a_random_window(connection, self.ROOT_WINDOW),
+            call.move_to_random_position_in_window(connection, self.WINDOW)
+        ])
