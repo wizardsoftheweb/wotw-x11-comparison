@@ -3,8 +3,8 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-# from mock import call, MagicMock, patch
-from mock import MagicMock, patch
+from mock import call, MagicMock, patch
+from xcb.xproto import GetPropertyType
 
 # from wotw_x11_comparison.common import HasLogger
 from wotw_x11_comparison.common import UsesXcbWindowProperties
@@ -73,3 +73,50 @@ class GetPropertyValueUnitTests(UsesXcbWindowPropertiesTestCase):
             self.ARRAY_VALUE,
             self.prop_user.get_property_value(reply)
         )
+
+
+class GetWindowPropertyUnitTests(UsesXcbWindowPropertiesTestCase):
+    WINDOW = 13
+    ATOM = 47
+
+    @patch.object(
+        UsesXcbWindowProperties,
+        'get_property_value',
+        return_value=MagicMock()
+    )
+    def test_cookie(self, mock_prop):
+        mock_get = MagicMock()
+        dummy_core = MagicMock(GetProperty=mock_get)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_window_property(
+            dummy_connection,
+            self.WINDOW,
+            self.ATOM
+        )
+        mock_get.assert_has_calls([
+            call(
+                False,
+                self.WINDOW,
+                self.ATOM,
+                GetPropertyType.Any,
+                0,
+                2 ** 32 - 1
+            ),
+            call().reply()
+        ])
+
+    @patch.object(
+        UsesXcbWindowProperties,
+        'get_property_value',
+        return_value=MagicMock()
+    )
+    def test_get_prop(self, mock_prop):
+        mock_get = MagicMock()
+        dummy_core = MagicMock(GetProperty=mock_get)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_window_property(
+            dummy_connection,
+            self.WINDOW,
+            self.ATOM
+        )
+        mock_prop.assert_called_once()
