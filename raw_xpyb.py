@@ -146,8 +146,18 @@ def display_benchmark(method_to_benchmark, *args, **kwargs):
     )
 
 
+def get_window_geometry(connection, window):
+    cookie = connection.core.GetGeometry(window)
+    return cookie.reply()
+
+
 def cli():
-    display_benchmark(find_window)
+    connection, setup = gather_basics()
+    root_window = get_root_window(setup)
+    geometry = get_window_geometry(connection, root_window)
+    for key in dir(geometry):
+        print(key)
+    # display_benchmark(find_window)
     sys_exit(0)
 
 if '__main__' == __name__:
