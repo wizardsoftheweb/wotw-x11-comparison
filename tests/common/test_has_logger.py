@@ -19,7 +19,7 @@ class ConstructorUnitTests(TestCase):
         mock_logging = MagicMock()
         mock_logging.attach_mock(mock_handler, 'addHandler')
         mock_logging.attach_mock(mock_level, 'setLevel')
-        mock_get.returnvalue = mock_logging
+        mock_get.return_value = mock_logging
         HasLogger()
         mock_get.assert_has_calls([
             call(mock_get.mock_calls[0][1][0]),
