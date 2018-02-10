@@ -294,6 +294,9 @@ xcb.xcb_query_tree_reply.argtypes = [
 ]
 xcb.xcb_query_tree_reply.restype = POINTER(xcb_query_tree_reply_t)
 
+xcb.xcb_query_tree_children.argtypes = [POINTER(xcb_query_pointer_reply_t)]
+xcb.xcb_query_tree_children.restype = POINTER(xcb_window_t)
+
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
