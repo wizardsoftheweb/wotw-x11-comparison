@@ -4,8 +4,7 @@ from __future__ import print_function
 from os.path import join
 from unittest import TestCase
 
-# from mock import call, MagicMock, patch
-from mock import MagicMock, patch
+from mock import call, MagicMock, patch
 
 from wotw_x11_comparison.common import WritesResults
 
@@ -108,3 +107,26 @@ class CreateOrLoadCsvUnitTests(WritesResultsTestCase):
             fieldnames=self.FIELDS,
             quoting=mock_nonnumeric
         )
+
+
+class WriteResultRowUnitTests(WritesResultsTestCase):
+    NONNUMERIC = 47
+
+    @patch(
+        'wotw_x11_comparison.common.writes_results.QUOTE_NONNUMERIC',
+        return_value=NONNUMERIC
+    )
+    def test_write(self, mock_nonnumeric):
+        mock_writerow = MagicMock()
+        mock_dict = MagicMock()
+        mock_dict.attach_mock(mock_writerow, 'writerow')
+        self.mock_dict_writer.return_value = mock_dict
+        self.result_writer.write_result_row(self.ENTRY)
+        self.mock_dict_writer.assert_has_calls([
+            call(
+                self.mock_dict_writer.mock_calls[0][1][0],
+                fieldnames=WritesResults.FIELDS,
+                quoting=mock_nonnumeric
+            ),
+            call().writerow(self.ENTRY)
+        ])
