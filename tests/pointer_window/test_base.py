@@ -83,3 +83,46 @@ class GetWindowUnderPointerUnitTests(BasePointerWindowTestCase):
             SimpleWindow.RANDOM_WINDOW
         )
         self.assertEquals(SimpleWindow.RANDOM_WINDOW, result)
+
+
+class ParseNamesUnitTests(BasePointerWindowTestCase):
+    EMPTY_NAME = None
+    SHORT_NAME = 'qqq'
+    LONG_NAME = 'abacus'
+    FIRST_SIMILAR_NAME = 'cool'
+    SECOND_SIMILAR_NAME = 'yeah'
+    FIRST_NAMES = [
+        EMPTY_NAME,
+        EMPTY_NAME,
+        FIRST_SIMILAR_NAME,
+        FIRST_SIMILAR_NAME,
+        SHORT_NAME,
+        LONG_NAME
+    ]
+    SECOND_NAMES = [
+        EMPTY_NAME,
+        SECOND_SIMILAR_NAME,
+        EMPTY_NAME,
+        SECOND_SIMILAR_NAME,
+        LONG_NAME,
+        SHORT_NAME
+    ]
+    RESULTS = [
+        '',
+        SECOND_SIMILAR_NAME,
+        FIRST_SIMILAR_NAME,
+        FIRST_SIMILAR_NAME,
+        LONG_NAME,
+        LONG_NAME
+    ]
+
+    def test_everything(self):
+        for index in range(0, len(self.RESULTS)):
+            print(index)
+            self.assertEquals(
+                self.window.parse_names(
+                    self.FIRST_NAMES[index],
+                    self.SECOND_NAMES[index]
+                ),
+                self.RESULTS[index]
+            )
