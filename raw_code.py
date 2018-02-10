@@ -6,6 +6,7 @@ from ctypes import *
 
 xcb = CDLL('libxcb.so.1')
 
+int16_t = c_int16
 uint8_t = c_uint8
 uint16_t = c_uint16
 uint32_t = c_uint32
@@ -14,6 +15,20 @@ DisplayName = c_char_p
 ScreenNumber = c_int
 
 IGNORED_FOR_NOW = POINTER(c_int)
+
+
+class xcb_generic_error_t(Structure):
+    _fields_ = [
+        ('response_type', uint8_t),
+        ('error_code', uint8_t),
+        ('sequence', uint16_t),
+        ('resource_id', uint32_t),
+        ('minor_code', uint16_t),
+        ('major_code', uint8_t),
+        ('pad0', uint8_t),
+        ('pad', uint32_t),
+        ('full_sequence', uint32_t),
+    ]
 
 
 class xcb_connection_t(Structure):
@@ -107,6 +122,22 @@ class xcb_query_pointer_cookie_t(Structure):
 #         ('length', uint16_t),
 #         ('window', xcb_window_t),
 #     ]
+
+class xcb_query_pointer_reply_t(Structure):
+    _fields_ = [
+        ('response_type', uint8_t),
+        ('same_screen', uint8_t),
+        ('sequence', uint16_t),
+        ('length', uint32_t),
+        ('root', xcb_window_t),
+        ('child', xcb_window_t),
+        ('root_x', int16_t),
+        ('root_y', int16_t),
+        ('win_x', int16_t),
+        ('win_y', int16_t),
+        ('mask', uint16_t),
+        ('pad0', uint8_t)
+    ]
 
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
