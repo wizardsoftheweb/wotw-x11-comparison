@@ -1,4 +1,6 @@
-# pylint: disable=W,C,R
+"""This file provides PointerWindowComparison"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from xcb import connect
 
@@ -8,6 +10,10 @@ from wotw_x11_comparison.pointer_window import XcbPointerWindow, XlibPointerWind
 
 
 class PointerWindowComparison(RunsComparisons):
+    """
+    This class compares the speed at which XCB and Xlib can find the window
+    beneath the pointer
+    """
     RUN_COUNT = 1000
     LIBRARIES = [XcbPointerWindow, XlibPointerWindow]
     FIELDS = [
@@ -20,19 +26,12 @@ class PointerWindowComparison(RunsComparisons):
         'win_y'
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(PointerWindowComparison, self).__init__(*args, **kwargs)
-
     def run_single_trial_one_library(self, pointer_window):
-        # self.logger.info('Gathering X connection')
+        """Runs a single trial with one library"""
         connection = connect()
-        # self.logger.debug("Connection: %s", connection)
         setup = connection.get_setup()
-        # self.logger.debug("Setup: %s", setup)
         root_window = setup.roots[0].root
-        # self.logger.debug("Root window: %s", root_window)
         window = self.warp_to_random_window(connection, root_window)
-        # wm_name = self.get_window_property(connection, window, Atom.WM_NAME)
         position = self.get_pointer_position(connection, window)
         run_time = self.benchmark(pointer_window.find_window)
         self.write_result_row({
@@ -46,11 +45,13 @@ class PointerWindowComparison(RunsComparisons):
         })
 
     def run_single_trial_all_libraries(self):
+        """Runs a single trial with all libraries"""
         for library in self.LIBRARIES:
             pointer_window = library()
             self.run_single_trial_one_library(pointer_window)
 
     def run_many_trials(self, count=None):
+        """Runs many trials with all libraries"""
         if count is None:
             count = self.RUN_COUNT
         for _ in range(0, count):

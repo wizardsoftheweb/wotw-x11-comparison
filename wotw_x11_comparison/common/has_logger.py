@@ -1,4 +1,6 @@
-# pylint: disable=W,C,R
+"""This file provides HasLogger"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 from logging import addLevelName, Formatter, getLogger, INFO, StreamHandler
 from sys import stderr
 
@@ -12,6 +14,7 @@ CONSOLE_HANDLER.setFormatter(CONSOLE_FORMATTER)
 
 
 class HasLogger(object):
+    """This classes collects logging tools for use as a superclass"""
 
     def __init__(
             self,
@@ -24,4 +27,4 @@ class HasLogger(object):
             lambda message, *args, **kwargs:
             self.logger.log(SILLY, message, *args, **kwargs)
         )
-        self.logger.setLevel(INFO)
+        self.logger.setLevel(logger_level)

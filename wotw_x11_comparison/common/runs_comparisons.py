@@ -1,10 +1,13 @@
-# pylint: disable=W,C,R
+"""This file provides RunsComparisons"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 from time import time as time_now
 
 from wotw_x11_comparison.common import MovesMouse, WritesResults
 
 
 class RunsComparisons(WritesResults, MovesMouse):
+    """This class combines everything necessary to run comparisons"""
 
     def __init__(self, *args, **kwargs):
         for base in RunsComparisons.__bases__:
@@ -12,6 +15,7 @@ class RunsComparisons(WritesResults, MovesMouse):
 
     @staticmethod
     def benchmark(action_to_benchmark, *args, **kwargs):
+        """This method simply clocks start and end time"""
         start = time_now()
         action_to_benchmark(*args, **kwargs)
         end = time_now()

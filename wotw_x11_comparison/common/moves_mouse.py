@@ -1,4 +1,6 @@
-# pylint: disable=W,C,R
+"""This file provides MovesMouse"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from random import randint
 from xcb.xproto import Atom
@@ -7,11 +9,10 @@ from wotw_x11_comparison.common import UsesXcbWindowProperties
 
 
 class MovesMouse(UsesXcbWindowProperties):
-
-    def __init__(self, *args, **kwargs):
-        super(MovesMouse, self).__init__(*args, **kwargs)
+    """This class uses XCB bindings to move the mouse pointer"""
 
     def choose_a_random_window(self, connection, root_window):
+        """Chooses a random window from _NET_CLIENT_LIST"""
         _NET_CLIENT_LIST = self.get_unknown_atom(
             connection,
             '_NET_CLIENT_LIST'
@@ -25,6 +26,7 @@ class MovesMouse(UsesXcbWindowProperties):
         return viable_windows[window_index]
 
     def move_to_random_position_in_window(self, connection, window):
+        """Moves the pointer to a random position inside the specified window"""
         geometry = self.get_window_geometry(connection, window)
         connection.core.WarpPointer(
             Atom._None,
@@ -39,6 +41,7 @@ class MovesMouse(UsesXcbWindowProperties):
         connection.flush()
 
     def warp_to_random_window(self, connection, root_window):
+        """Picks a random window and warps the pointer to it"""
         window = self.choose_a_random_window(connection, root_window)
         self.move_to_random_position_in_window(connection, window)
         return window

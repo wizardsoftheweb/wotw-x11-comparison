@@ -1,4 +1,4 @@
-"""Placeholder"""
+"""This file provides the common module"""
 from .has_logger import HasLogger
 from .uses_xcb_window_properties import UsesXcbWindowProperties
 from .moves_mouse import MovesMouse
