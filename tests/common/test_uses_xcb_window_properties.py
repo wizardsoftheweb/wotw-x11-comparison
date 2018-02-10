@@ -6,7 +6,7 @@ from __future__ import print_function
 from unittest import TestCase
 
 from mock import call, MagicMock, patch
-from xcb.xproto import GetPropertyType
+from xcffib.xproto import GetPropertyType
 
 from wotw_x11_comparison.common import UsesXcbWindowProperties
 
