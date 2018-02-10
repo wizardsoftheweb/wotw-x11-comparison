@@ -77,6 +77,22 @@ class xcb_screen_iterator_t(Structure):
         ('index', uint8_t),
     ]
 
+
+def screen_of_display(xcb_connection, xcb_screen_number):
+    # https://xcb.freedesktop.org/xlibtoxcbtranslationguide/#screenofdisplay
+    try:
+        screen = xcb_screen_number.value
+    except AttributeError:
+        screen = xcb_screen_number
+    setup = xcb.xcb_get_setup(xcb_connection)
+    iterator = xcb.xcb_setup_roots_iterator(setup)
+    while iterator.rem:
+        if 0 == screen:
+            return iterator.data
+        screen -= 1
+        xcb.xcb_screen_next(iterator)
+    return None
+
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
 xcb.xcb_get_setup.argtypes = [POINTER(xcb_connection_t)]
@@ -85,11 +101,7 @@ xcb.xcb_setup_roots_iterator.argtypes = [POINTER(xcb_setup_t)]
 xcb.xcb_setup_roots_iterator.restype = xcb_screen_iterator_t
 xcb.xcb_screen_next.argtypes = [POINTER(xcb_screen_iterator_t)]
 xcb.xcb_screen_next.restype = None
-# xcb.screen_of_display.argtypes = [xcb_connection_t, ScreenNumber]
-# xcb.screen_of_display.restype = xcb_screen_t
 
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
-SETUP = xcb.xcb_get_setup(CONNECTION)
-ITERATOR = xcb.xcb_setup_roots_iterator(SETUP)
-# SCREEN = xcb.screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
+SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
