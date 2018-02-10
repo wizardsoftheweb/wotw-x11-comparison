@@ -2,3 +2,4 @@
 """Placeholder"""
 
 from .common import *
+from .pointer_window import *
