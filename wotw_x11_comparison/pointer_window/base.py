@@ -14,15 +14,15 @@ class BasePointerWindow(HasLogger):
 
     @abstractmethod
     def gather_basics(self):
-        pass
+        """Placeholder"""
 
     @abstractmethod
     def get_root_window(self, lib_primary, lib_secondary):
-        pass
+        """Placeholder"""
 
     @abstractmethod
     def get_mouse_windows(self, lib_primary, window):
-        pass
+        """Placeholder"""
 
     def get_window_under_pointer(self, lib_primary, window):
         self.logger.silly(
@@ -40,7 +40,7 @@ class BasePointerWindow(HasLogger):
 
     @abstractmethod
     def get_window_names(self, lib_primary, window):
-        pass
+        """Placeholder"""
 
     def parse_names(self, first, second):
         self.logger.debug("Comparing %s and %s", first, second)
