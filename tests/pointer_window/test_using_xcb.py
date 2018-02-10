@@ -52,3 +52,12 @@ class GatherBasicsUnitTests(XcbPointerWindowTestCase):
         primary, secondary = self.window.gather_basics()
         self.assertEquals(primary, self.PRIMARY)
         self.assertEquals(secondary, self.SECONDARY)
+
+
+class GetRootWindowUnitTests(XcbPointerWindowTestCase):
+
+    def test_results(self):
+        self.assertEquals(
+            self.ROOT_WINDOW,
+            self.window.get_root_window(self.PRIMARY, self.SECONDARY)
+        )
