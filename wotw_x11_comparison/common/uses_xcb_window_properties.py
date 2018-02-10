@@ -1,4 +1,6 @@
-# pylint: disable=W,C,R
+"""This file provides UsesXcbWindowProperties"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from struct import unpack
 from xcb.xproto import GetPropertyReply, GetPropertyType
@@ -7,11 +9,16 @@ from wotw_x11_comparison.common import HasLogger
 
 
 class UsesXcbWindowProperties(HasLogger):
+    """This class collects several useful XCB window tools"""
 
     def __init__(self, *args, **kwargs):
         super(UsesXcbWindowProperties, self).__init__(*args, **kwargs)
 
     def get_property_value(self, reply):
+        """
+        Parses the property's value.
+        @see https://bbs.archlinux.org/viewtopic.php?pid=891853#p891853
+        """
         self.logger.debug("Attempting to parse %s's value", reply)
         if isinstance(reply, GetPropertyReply):
             if 8 == reply.format:
@@ -29,11 +36,11 @@ class UsesXcbWindowProperties(HasLogger):
                 )
                 self.logger.silly("Parsed %s", value)
                 return value
-
         self.logger.warning("The reply might not be valid: %s", reply)
         return None
 
     def get_window_property(self, connection, window, atom):
+        """Gets an atomized window property"""
         self.logger.debug("Getting property %s from window %s", atom, window)
         cookie = connection.core.GetProperty(
             False,
@@ -47,6 +54,7 @@ class UsesXcbWindowProperties(HasLogger):
         return self.get_property_value(reply)
 
     def get_unknown_atom(self, connection, atom, exists_only=False):
+        """Finds the number for an unknown atom"""
         cookie = connection.core.InternAtom(
             exists_only,
             len(atom),
@@ -56,8 +64,10 @@ class UsesXcbWindowProperties(HasLogger):
         return reply.atom
 
     def get_window_geometry(self, connection, window):
+        """Gets the window geometry"""
         cookie = connection.core.GetGeometry(window)
         return cookie.reply()
 
     def get_pointer_position(self, connection, window):
+        """Gets the pointer position"""
         return connection.core.QueryPointer(window).reply()
