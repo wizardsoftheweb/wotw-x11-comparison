@@ -46,14 +46,16 @@ class BasePointerWindow(HasLogger):
         self.logger.debug("Comparing %s and %s", first, second)
         if first:
             if second:
-                if first == second or len(first) > len(second):
+                if len(first) < len(second):
                     self.logger.silly(
-                        'Chose the first; same string or same length'
+                        'Chose the second; same string or same length'
                     )
-                    return first
+                    return second
             self.logger.silly(
-                'Chose the second; first is not equal and shorter'
+                'Chose the first; second is equal or shorter'
             )
+            return first
+        elif second:
             return second
         return ''
 
