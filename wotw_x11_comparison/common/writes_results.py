@@ -8,7 +8,7 @@ from sys import exit as sys_exit
 
 class WritesResults(object):
     RESULTS_PATH = 'results.csv'
-    FIELDS = {}
+    FIELDS = []
 
     def __init__(self, csv_path=None, fields=None):
         self.active_csv = self.RESULTS_PATH
