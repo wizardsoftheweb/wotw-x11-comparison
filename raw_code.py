@@ -223,6 +223,19 @@ class xcb_get_property_reply_t(Structure):
 
 xcb_query_tree_cookie_t = GenericCookie
 
+
+class xcb_query_tree_reply_t(Structure):
+    _fields_ = [
+        ('response_type', uint8_t),
+        ('pad0', uint8_t),
+        ('sequence', uint16_t),
+        ('length', uint32_t),
+        ('root', xcb_window_t),
+        ('parent', xcb_window_t),
+        ('children_len', uint16_t),
+        ('pad1', uint8_t * 14)
+    ]
+
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
 
@@ -274,6 +287,13 @@ xcb.xcb_query_tree.argtypes = [
 ]
 xcb.xcb_query_tree.restype = xcb_query_tree_cookie_t
 
+xcb.xcb_query_tree_reply.argtypes = [
+    POINTER(xcb_connection_t),
+    xcb_query_tree_cookie_t,
+    POINTER(POINTER(xcb_generic_error_t))
+]
+xcb.xcb_query_tree_reply.restype = POINTER(xcb_query_tree_reply_t)
+
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
@@ -293,5 +313,6 @@ ERROR_LIST = None
 # )
 # REPLY = xcb.xcb_get_property_reply(CONNECTION, COOKIE, ERROR_LIST)
 # print(xcb.xcb_get_property_value_length(REPLY))
-COOKIE = xcb.xcb_query_tree(CONNECTION, ROOT_WINDOW)
-print(COOKIE.sequence)
+TREE_COOKIE = xcb.xcb_query_tree(CONNECTION, ROOT_WINDOW)
+TREE_REPLY = xcb.xcb_query_tree_reply(CONNECTION, TREE_COOKIE, ERROR_LIST)
+print(TREE_REPLY.contents.length)
