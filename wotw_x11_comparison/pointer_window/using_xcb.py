@@ -76,5 +76,3 @@ class XcbPointerWindow(BasePointerWindow):
         )
         self.logger.silly("WM Icon Name: %s", wm_icon_name)
         return [wm_name, wm_icon_name]
-
-test = XcbPointerWindow()
