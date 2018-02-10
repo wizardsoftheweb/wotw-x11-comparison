@@ -1,6 +1,6 @@
 # IDE stuff
 *.sublime-*
-!wotw-xcb.sublime-project
+!wotw-x11-comparison.sublime-project
 
 # Personal stuff
 .wotw-ignored
