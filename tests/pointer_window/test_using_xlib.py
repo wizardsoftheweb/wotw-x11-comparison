@@ -1,5 +1,5 @@
 # pylint: disable=missing-docstring,unused-argument,invalid-name
-# pylint: disable=no-self-use,protected-access,unused-import
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 from __future__ import print_function
 
 from unittest import TestCase
@@ -17,6 +17,7 @@ class XlibPointerWindowTestCase(TestCase):
     SECONDARY = MagicMock()
 
     WM_NAME = 'qqq'
+    WM_ICON_NAME = 'zzz'
 
     def setUp(self):
         self.construct_window()
@@ -110,3 +111,31 @@ class GetMouseWindowsUnitTests(XlibPointerWindowTestCase):
         self.assertEquals(mock_window.call_count, 2)
         self.assertEquals(mock_coord.call_count, 4)
         self.assertEquals(mock_byref.call_count, 7)
+
+
+class GetWindowNamesUnitTests(XlibPointerWindowTestCase):
+
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.c_char_p',
+        return_value=MagicMock(value=XlibPointerWindowTestCase.WM_NAME)
+    )
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.xlib.XFetchName'
+    )
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.XTextProperty',
+        return_value=MagicMock(value=XlibPointerWindowTestCase.WM_ICON_NAME)
+    )
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.xlib.XGetWMIconName'
+    )
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.byref'
+    )
+    def test_results(self, mock_byref, mock_icon_name, mock_prop, mock_name, mock_char):
+        wm_name, wm_icon_name = self.window.get_window_names(
+            self.PRIMARY,
+            self.ROOT_WINDOW
+        )
+        self.assertEquals(wm_name, self.WM_NAME)
+        self.assertEquals(wm_icon_name, self.WM_ICON_NAME)
