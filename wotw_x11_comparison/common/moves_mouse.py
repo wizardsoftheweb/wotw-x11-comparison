@@ -3,7 +3,7 @@
 # pylint: disable=protected-access
 
 from random import randint
-from xcb.xproto import Atom
+from xcffib.xproto import Atom
 
 from wotw_x11_comparison.common import UsesXcbWindowProperties
 
