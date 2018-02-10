@@ -123,6 +123,8 @@ xlib.XGetWMIconName.restype = c_int
 
 class XlibPointerWindow(BasePointerWindow):
 
+    library = 'xlib'
+
     def gather_basics(self):
         self.logger.info('Gathering display and root window')
         display = xlib.XOpenDisplay(None)
@@ -167,6 +169,3 @@ class XlibPointerWindow(BasePointerWindow):
         xlib.XGetWMIconName(lib_primary, window, byref(props))
         self.logger.silly("WM Icon Name: %s", props.value)
         return [name.value, props.value]
-
-test = XlibPointerWindow()
-test.find_window()
