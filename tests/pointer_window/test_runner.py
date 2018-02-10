@@ -4,7 +4,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from mock import call, MagicMock, patch
+from mock import MagicMock, patch
 
 from wotw_x11_comparison.pointer_window import PointerWindowComparison
 
