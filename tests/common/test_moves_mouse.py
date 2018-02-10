@@ -1,10 +1,11 @@
-# pylint: disable=missing-docstring,unused-argument,invalid-name,no-self-use
+# pylint: disable=missing-docstring,unused-argument,invalid-name
+# pylint: disable=no-self-use,protected-access
 from __future__ import print_function
 
 from unittest import TestCase
 
 from mock import call, MagicMock, patch
-# from xcb.xproto import GetPropertyType
+from xcb.xproto import Atom
 
 from wotw_x11_comparison.common import MovesMouse
 
@@ -89,3 +90,55 @@ class ChooseARandomWindowUnitTests(MovesMouseTestCase):
             self.LIST_OF_WINDOWS[self.RANDOM_INT],
             result
         )
+
+
+class MoveToRandomPositionInWindowUnitTests(MovesMouseTestCase):
+    RANDOM_INT = 2
+    WINDOW = 99
+
+    @patch(
+        'wotw_x11_comparison.common.moves_mouse.randint',
+        return_value=RANDOM_INT
+    )
+    def test_warp_pointer(self, mock_rand):
+        mock_warp = MagicMock()
+        dummy_core = MagicMock(WarpPointer=mock_warp)
+        mock_flush = MagicMock()
+        dummy_connection = MagicMock(core=dummy_core, flush=mock_flush)
+        mock_holder = MagicMock()
+        mock_holder.attach_mock(
+            self.mock_get_window_geometry,
+            'get_window_geometry'
+        )
+        mock_holder.attach_mock(
+            mock_warp,
+            'WarpPointer'
+        )
+        mock_holder.attach_mock(
+            mock_rand,
+            'randint'
+        )
+        mock_holder.attach_mock(
+            mock_flush,
+            'flush'
+        )
+        self.mover.move_to_random_position_in_window(
+            dummy_connection,
+            self.WINDOW
+        )
+        mock_holder.assert_has_calls([
+            call.get_window_geometry(dummy_connection, self.WINDOW),
+            call.randint(0, self.WIDTH),
+            call.randint(0, self.HEIGHT),
+            call.WarpPointer(
+                Atom._None,
+                self.WINDOW,
+                0,
+                0,
+                0,
+                0,
+                self.RANDOM_INT,
+                self.RANDOM_INT
+            ),
+            call.flush()
+        ])
