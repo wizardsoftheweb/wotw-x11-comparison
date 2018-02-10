@@ -24,7 +24,6 @@ class BasePointerWindow(HasLogger):
     def get_mouse_windows(self, lib_primary, window):
         pass
 
-    @abstractmethod
     def get_window_under_pointer(self, lib_primary, window):
         self.logger.silly(
             "Searching for the window under the pointer relative to window %s",
