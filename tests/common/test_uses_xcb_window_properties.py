@@ -6,7 +6,6 @@ from unittest import TestCase
 from mock import call, MagicMock, patch
 from xcb.xproto import GetPropertyType
 
-# from wotw_x11_comparison.common import HasLogger
 from wotw_x11_comparison.common import UsesXcbWindowProperties
 
 
