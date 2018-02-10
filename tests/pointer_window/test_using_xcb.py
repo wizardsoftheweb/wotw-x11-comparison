@@ -1,5 +1,6 @@
-# pylint: disable=missing-docstring,unused-argument,invalid-name
-# pylint: disable=no-self-use,protected-access,unused-import
+# pylint: disable=missing-docstring
+# pylint: disable=unused-argument
+
 from __future__ import print_function
 
 from unittest import TestCase
