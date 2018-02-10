@@ -4,8 +4,7 @@ from __future__ import print_function
 
 from unittest import TestCase
 
-from mock import call, MagicMock, patch
-from xcb.xproto import Atom
+from mock import MagicMock, patch
 
 from wotw_x11_comparison.common import MovesMouse, RunsComparisons, WritesResults
 
@@ -45,3 +44,24 @@ class ConstructorUnitTests(RunsComparisonsTestCase):
         self.construct_runner()
         self.assertEquals(self.mock_writes_results.call_count, 1)
         self.assertEquals(self.mock_moves_mouse.call_count, 1)
+
+
+class BenchmarkUnitTests(RunsComparisonsTestCase):
+    TIME = 75
+
+    @patch(
+        'wotw_x11_comparison.common.runs_comparisons.time_now',
+        return_value=TIME
+    )
+    def test_action_call(self, mock_time):
+        action = MagicMock()
+        RunsComparisons.benchmark(action)
+        action.assert_called_once_with()
+
+    @patch(
+        'wotw_x11_comparison.common.runs_comparisons.time_now',
+        return_value=TIME
+    )
+    def test_result(self, mock_time):
+        action = MagicMock()
+        self.assertEquals(0, RunsComparisons.benchmark(action))
