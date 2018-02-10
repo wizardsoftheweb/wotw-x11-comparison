@@ -294,8 +294,13 @@ xcb.xcb_query_tree_reply.argtypes = [
 ]
 xcb.xcb_query_tree_reply.restype = POINTER(xcb_query_tree_reply_t)
 
-xcb.xcb_query_tree_children.argtypes = [POINTER(xcb_query_pointer_reply_t)]
+xcb.xcb_query_tree_children.argtypes = [POINTER(xcb_query_tree_reply_t)]
 xcb.xcb_query_tree_children.restype = POINTER(xcb_window_t)
+
+xcb.xcb_query_tree_children_length.argtypes = [
+    POINTER(xcb_query_tree_reply_t)
+]
+xcb.xcb_query_tree_children_length.restype = c_int
 
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
@@ -318,4 +323,4 @@ ERROR_LIST = None
 # print(xcb.xcb_get_property_value_length(REPLY))
 TREE_COOKIE = xcb.xcb_query_tree(CONNECTION, ROOT_WINDOW)
 TREE_REPLY = xcb.xcb_query_tree_reply(CONNECTION, TREE_COOKIE, ERROR_LIST)
-print(TREE_REPLY.contents.length)
+print(xcb.xcb_query_tree_children_length(TREE_REPLY))
