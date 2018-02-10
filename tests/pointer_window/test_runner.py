@@ -105,3 +105,29 @@ class RunSingleTrialAllLibrariesUnitTests(PointerWindowComparisonTestCase):
             len(self.LIBRARIES),
             mock_run.call_count
         )
+
+
+class RunManyTrialsUnitTests(PointerWindowComparisonTestCase):
+    RUN_COUNT = 15
+
+    @patch.object(
+        PointerWindowComparison,
+        'run_single_trial_all_libraries',
+    )
+    def test_results_with_base_run_count(self, mock_run):
+        self.runner.run_many_trials()
+        self.assertEquals(
+            PointerWindowComparison.RUN_COUNT,
+            mock_run.call_count
+        )
+
+    @patch.object(
+        PointerWindowComparison,
+        'run_single_trial_all_libraries',
+    )
+    def test_results_with_new_run_count(self, mock_run):
+        self.runner.run_many_trials(self.RUN_COUNT)
+        self.assertEquals(
+            self.RUN_COUNT,
+            mock_run.call_count
+        )
