@@ -24,7 +24,7 @@ class PointerWindowComparison(RunsComparisons):
     def __init__(self, *args, **kwargs):
         super(PointerWindowComparison, self).__init__(*args, **kwargs)
 
-    def run_single_trial_one_library_trial(self, pointer_window):
+    def run_single_trial_one_library(self, pointer_window):
         # self.logger.info('Gathering X connection')
         connection = connect()
         # self.logger.debug("Connection: %s", connection)
@@ -49,7 +49,7 @@ class PointerWindowComparison(RunsComparisons):
     def run_single_trial_all_libraries(self):
         for library in self.LIBRARIES:
             pointer_window = library()
-            self.run_single_trial_one_library_trial(pointer_window)
+            self.run_single_trial_one_library(pointer_window)
 
     def run_many_trials(self, count=None):
         if count is None:
