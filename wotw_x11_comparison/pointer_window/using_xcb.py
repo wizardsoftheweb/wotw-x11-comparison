@@ -1,7 +1,7 @@
 """This file provides XcbPointerWindow"""
 
-from xcb import connect
-from xcb.xproto import Atom
+from xcffib import connect
+from xcffib.xproto import Atom
 
 from wotw_x11_comparison.common import UsesXcbWindowProperties
 from wotw_x11_comparison.pointer_window import BasePointerWindow

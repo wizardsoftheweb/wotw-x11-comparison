@@ -6,7 +6,7 @@ from __future__ import print_function
 from unittest import TestCase
 
 from mock import call, MagicMock, patch
-from xcb.xproto import Atom
+from xcffib.xproto import Atom
 
 from wotw_x11_comparison.pointer_window import XcbPointerWindow
 
