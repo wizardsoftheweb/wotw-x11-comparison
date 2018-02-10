@@ -1,8 +1,7 @@
 # pylint: disable=W,C,R
 
-from struct import unpack
 from xcb import connect
-from xcb.xproto import Atom, GetPropertyReply, GetPropertyType
+from xcb.xproto import Atom
 
 from wotw_x11_comparison.common import UsesXcbWindowProperties
 from wotw_x11_comparison.pointer_window import BasePointerWindow

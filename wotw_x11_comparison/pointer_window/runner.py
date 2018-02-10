@@ -1,7 +1,6 @@
 # pylint: disable=W,C,R
 
 from xcb import connect
-from xcb.xproto import Atom
 
 from wotw_x11_comparison.common import RunsComparisons
 
