@@ -16,12 +16,16 @@ class SimpleWindow(BasePointerWindow):
     CHILD_WINDOW = 1
     NO_CHILDREN = 0
     SAME_WINDOW = 5
+    PRIMARY = MagicMock()
+    SECONDARY = MagicMock()
+    WM_NAME = 'rad'
+    WM_ICON_NAME = None
 
     def gather_basics(self):
-        pass
+        return [self.PRIMARY, self.SECONDARY]
 
     def get_root_window(self, lib_primary, lib_secondary):
-        pass
+        return self.ROOT_WINDOW
 
     def get_mouse_windows(self, lib_primary, window):
         if self.SAFE_WINDOW == window:
@@ -31,7 +35,7 @@ class SimpleWindow(BasePointerWindow):
         return [self.ROOT_WINDOW, 0]
 
     def get_window_names(self, lib_primary, window):
-        pass
+        return [self.WM_NAME, self.WM_ICON_NAME]
 
 
 class BasePointerWindowTestCase(TestCase):
@@ -126,3 +130,21 @@ class ParseNamesUnitTests(BasePointerWindowTestCase):
                 ),
                 self.RESULTS[index]
             )
+
+
+class FindWindowUnitTests(BasePointerWindowTestCase):
+
+    @patch.object(
+        SimpleWindow,
+        'parse_names',
+        return_value=SimpleWindow.WM_NAME
+    )
+    @patch.object(
+        SimpleWindow,
+        'get_window_under_pointer',
+        return_value=SimpleWindow.CHILD_WINDOW
+    )
+    def test_result(self, mock_get, mock_parse):
+        window, wm_name = self.window.find_window()
+        self.assertEquals(window, SimpleWindow.CHILD_WINDOW)
+        self.assertEquals(wm_name, SimpleWindow.WM_NAME)
