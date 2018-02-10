@@ -17,7 +17,7 @@ class BasePointerWindow(HasLogger):
         pass
 
     @abstractmethod
-    def get_root_window(self, lib_secondary):
+    def get_root_window(self, lib_primary, lib_secondary):
         pass
 
     @abstractmethod
@@ -60,7 +60,7 @@ class BasePointerWindow(HasLogger):
     def find_window(self):
         self.logger.info('Launching')
         lib_primary, lib_secondary = self.gather_basics()
-        root_window = self.get_root_window(lib_secondary)
+        root_window = self.get_root_window(lib_primary, lib_secondary)
         self.logger.info('Beginning search')
         window = self.get_window_under_pointer(lib_primary, root_window)
         self.logger.info("Window candidate is %s", window)
