@@ -159,3 +159,38 @@ class GetUnknownAtomUnitTests(UsesXcbWindowPropertiesTestCase):
             ),
             call().reply()
         ])
+
+
+class GetWindowGeometryUnitTests(UsesXcbWindowPropertiesTestCase):
+    WINDOW = 47
+
+    def test_geometry_call(self):
+        mock_get = MagicMock()
+        dummy_core = MagicMock(GetGeometry=mock_get)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_window_geometry(
+            dummy_connection,
+            self.WINDOW
+        )
+        mock_get.assert_has_calls([
+            call(
+                self.WINDOW
+            ),
+            call().reply()
+        ])
+
+
+class GetPointerPositionUnitTests(UsesXcbWindowPropertiesTestCase):
+    WINDOW = 47
+
+    def test_geometry_call(self):
+        mock_query = MagicMock()
+        dummy_core = MagicMock(QueryPointer=mock_query)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_pointer_position(
+            dummy_connection,
+            self.WINDOW
+        )
+        mock_query.assert_has_calls([
+            call(self.WINDOW).reply()
+        ])
