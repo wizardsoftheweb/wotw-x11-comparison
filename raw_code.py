@@ -14,6 +14,9 @@ uint32_t = c_uint32
 DisplayName = c_char_p
 ScreenNumber = c_int
 
+XCB_ATOM_STRING = 31
+XCB_ATOM_WM_NAME = 39
+
 IGNORED_FOR_NOW = POINTER(c_int)
 
 
@@ -29,6 +32,8 @@ class xcb_generic_error_t(Structure):
         ('pad', uint32_t * 5),
         ('full_sequence', uint32_t),
     ]
+
+xcb_atom_t = uint32_t
 
 
 class xcb_connection_t(Structure):
@@ -139,25 +144,60 @@ class xcb_query_pointer_reply_t(Structure):
         ('pad0', uint8_t * 2)
     ]
 
+
+class xcb_get_property_cookie_t(Structure):
+    _fields_ = [
+        ('sequence', c_uint)
+    ]
+
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
+
 xcb.xcb_get_setup.argtypes = [POINTER(xcb_connection_t)]
 xcb.xcb_get_setup.restype = POINTER(xcb_setup_t)
+
 xcb.xcb_setup_roots_iterator.argtypes = [POINTER(xcb_setup_t)]
 xcb.xcb_setup_roots_iterator.restype = xcb_screen_iterator_t
+
 xcb.xcb_screen_next.argtypes = [POINTER(xcb_screen_iterator_t)]
 xcb.xcb_screen_next.restype = None
+
 xcb.xcb_query_pointer.argtypes = [POINTER(xcb_connection_t), xcb_window_t]
 xcb.xcb_query_pointer.restype = xcb_query_pointer_cookie_t
-xcb.xcb_query_pointer_reply.argtypes = [POINTER(
-    xcb_connection_t), xcb_query_pointer_cookie_t, POINTER(POINTER(xcb_generic_error_t))]
+
+xcb.xcb_query_pointer_reply.argtypes = [
+    POINTER(xcb_connection_t),
+    xcb_query_pointer_cookie_t,
+    POINTER(POINTER(xcb_generic_error_t))
+]
 xcb.xcb_query_pointer_reply.restype = POINTER(xcb_query_pointer_reply_t)
+
+xcb.xcb_get_property.argtypes = [
+    POINTER(xcb_connection_t),
+    uint8_t,
+    xcb_window_t,
+    xcb_atom_t,
+    xcb_atom_t,
+    uint32_t,
+    uint32_t
+]
+xcb.xcb_get_property.restype = xcb_get_property_cookie_t
 
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
 ROOT_WINDOW = DEFAULT_SCREEN.contents.root
-COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
-ERROR_LIST = None
-REPLY = xcb.xcb_query_pointer_reply(CONNECTION, COOKIE, ERROR_LIST)
-print(REPLY.contents.response_type)
+# COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
+# ERROR_LIST = None
+# REPLY = xcb.xcb_query_pointer_reply(CONNECTION, COOKIE, ERROR_LIST)
+# print(REPLY.contents.response_type)
+COOKIE = xcb.xcb_get_property(
+    CONNECTION,
+    0,
+    ROOT_WINDOW,
+    XCB_ATOM_WM_NAME,
+    XCB_ATOM_STRING,
+    0,
+    1
+)
+print(COOKIE)
