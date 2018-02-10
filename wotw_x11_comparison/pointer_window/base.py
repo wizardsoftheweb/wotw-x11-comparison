@@ -1,4 +1,6 @@
-# pylint: disable=W,C,R
+"""This file provides BasePointerWindow"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from abc import ABCMeta, abstractmethod
 
@@ -6,22 +8,30 @@ from wotw_x11_comparison.common import HasLogger
 
 
 class BasePointerWindow(HasLogger):
+    """
+    This abstract class collects common components to detect the window
+    underneath the pointer
+    """
 
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def gather_basics(self):
-        """Placeholder"""
+        """Sets up the primary and secondary sources"""
 
     @abstractmethod
     def get_root_window(self, lib_primary, lib_secondary):
-        """Placeholder"""
+        """Gets the root window"""
 
     @abstractmethod
     def get_mouse_windows(self, lib_primary, window):
-        """Placeholder"""
+        """Finds the children of window beneath the pointer (if any)"""
 
     def get_window_under_pointer(self, lib_primary, window):
+        """
+        Recursively checks windows and their children beneath the pointer,
+        beginning with the root window
+        """
         self.logger.silly(
             "Searching for the window under the pointer relative to window %s",
             window
@@ -37,9 +47,10 @@ class BasePointerWindow(HasLogger):
 
     @abstractmethod
     def get_window_names(self, lib_primary, window):
-        """Placeholder"""
+        """Gets WM_NAME and WM_ICON_NAME for the specified window"""
 
     def parse_names(self, first, second):
+        """Finds the longest name"""
         self.logger.debug("Comparing %s and %s", first, second)
         if first:
             if second:
@@ -57,6 +68,7 @@ class BasePointerWindow(HasLogger):
         return ''
 
     def find_window(self):
+        """Attempts to find the window underneath the pointer"""
         self.logger.info('Launching')
         lib_primary, lib_secondary = self.gather_basics()
         root_window = self.get_root_window(lib_primary, lib_secondary)
