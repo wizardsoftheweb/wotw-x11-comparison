@@ -2,6 +2,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+import csv
+from os import path
+import random
 import struct
 import xcb
 from xcb.xproto import *
@@ -24,6 +27,10 @@ LOGGER.silly = (
 )
 LOGGER.setLevel(INFO)
 
+FIELDS = ['library', 'time', 'root_x', 'root_y', 'wm_name',  'win_x', 'win_y']
+RESULTS_PATH = 'results.csv'
+LIBRARY = 'XCB'
+
 
 def get_property_value(reply):
     LOGGER.debug("Attempting to parse %s's value", reply)
@@ -34,11 +41,16 @@ def get_property_value(reply):
                 value += chr(chunk)
             LOGGER.silly("Parsed %s", value)
             return value
-        else:
-            LOGGER.warning(
-                "Unmanaged format %s; results may be wrong",
-                reply.format
+        elif reply.format in (16, 32):
+            value = list(
+                struct.unpack(
+                    'I' * reply.value_len,
+                    reply.value.buf()
+                )
             )
+            LOGGER.silly("Parsed %s", value)
+            return value
+
     LOGGER.warning("The reply might not be valid: %s", reply)
     return None
 
@@ -95,11 +107,14 @@ def get_window_names(connection, window):
 
 def parse_names(first, second):
     LOGGER.debug("Comparing %s and %s", first, second)
-    if first == second or len(first) > len(second):
-        LOGGER.silly('Chose the first; same string or same length')
-        return first
-    LOGGER.silly('Chose the second; first is not equal and shorter')
-    return second
+    if first:
+        if second:
+            if first == second or len(first) > len(second):
+                LOGGER.silly('Chose the first; same string or same length')
+                return first
+        LOGGER.silly('Chose the second; first is not equal and shorter')
+        return second
+    return ''
 
 
 def get_root_window(setup):
@@ -151,12 +166,96 @@ def get_window_geometry(connection, window):
     return cookie.reply()
 
 
-def cli():
+def get_unknown_atom(connection, atom, exists_only=False):
+    cookie = connection.core.InternAtom(
+        exists_only,
+        len(atom),
+        atom
+    )
+    reply = cookie.reply()
+    setattr(Atom, atom, reply.atom)
+
+
+def choose_a_random_window(connection, root_window):
+    viable_windows = get_window_property(
+        connection,
+        root_window,
+        getattr(Atom, '_NET_CLIENT_LIST')
+    )
+    window_index = random.randint(0, len(viable_windows) - 1)
+    return viable_windows[window_index]
+
+
+def move_to_random_position_in_window(connection, window):
+    geometry = get_window_geometry(connection, window)
+    connection.core.WarpPointer(
+        Atom._None,
+        window,
+        0,
+        0,
+        0,
+        0,
+        random.randint(0, geometry.width),
+        random.randint(0, geometry.height)
+    )
+    connection.flush()
+
+
+def warp_to_random_window(connection, root_window):
+    window = choose_a_random_window(connection, root_window)
+    move_to_random_position_in_window(connection, window)
+    return window
+
+
+def create_or_load_csv():
+    if not path.isfile(RESULTS_PATH):
+        with open(RESULTS_PATH, 'w+') as results_csv:
+            writer = csv.DictWriter(
+                results_csv, fieldnames=FIELDS, quoting=csv.QUOTE_NONNUMERIC)
+            writer.writeheader()
+
+
+def write_result_row(time, position, wm_name):
+    with open(RESULTS_PATH, 'a+') as results_csv:
+        writer = csv.DictWriter(
+            results_csv, fieldnames=FIELDS, quoting=csv.QUOTE_NONNUMERIC)
+        writer.writerow({
+            'library': LIBRARY,
+            'time': time,
+            'root_x': position.root_x,
+            'root_y': position.root_y,
+            'wm_name': wm_name,
+            'win_x': position.win_x,
+            'win_y': position.win_y,
+        })
+
+
+def run_single_trial():
+    run_time = benchmark(find_window)
     connection, setup = gather_basics()
     root_window = get_root_window(setup)
-    geometry = get_window_geometry(connection, root_window)
-    for key in dir(geometry):
-        print(key)
+    get_unknown_atom(connection, '_NET_CLIENT_LIST', True)
+    window = warp_to_random_window(connection, root_window)
+    window_name = get_window_property(connection, window, Atom.WM_NAME)
+    position = connection.core.QueryPointer(root_window).reply()
+    write_result_row(run_time, position, window_name)
+
+
+def cli():
+    create_or_load_csv()
+    run_single_trial()
+    # display_benchmark(find_window)
+    # connection.core.WarpPointer(
+    #     root_window,
+    #     # root_window,
+    #     Atom._None,
+    #     0,
+    #     0,
+    #     geometry.width,
+    #     geometry.height,
+    #     random.randint(-geometry.width, geometry.width),
+    #     random.randint(-geometry.height, geometry.height)
+    # )
     # display_benchmark(find_window)
     sys_exit(0)
 
