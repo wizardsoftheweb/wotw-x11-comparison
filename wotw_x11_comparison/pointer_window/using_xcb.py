@@ -4,47 +4,13 @@ from struct import unpack
 from xcb import connect
 from xcb.xproto import Atom, GetPropertyReply, GetPropertyType
 
+from wotw_x11_comparison.common import UsesXcbWindowProperties
 from wotw_x11_comparison.pointer_window import BasePointerWindow
 
 
-class XcbPointerWindow(BasePointerWindow):
+class XcbPointerWindow(UsesXcbWindowProperties, BasePointerWindow):
 
     library = 'xcb'
-
-    def get_property_value(self, reply):
-        self.logger.debug("Attempting to parse %s's value", reply)
-        if isinstance(reply, GetPropertyReply):
-            if 8 == reply.format:
-                value = ''
-                for chunk in reply.value:
-                    value += chr(chunk)
-                self.logger.silly("Parsed %s", value)
-                return value
-            elif reply.format in (16, 32):
-                value = list(
-                    unpack(
-                        'I' * reply.value_len,
-                        reply.value.buf()
-                    )
-                )
-                self.logger.silly("Parsed %s", value)
-                return value
-
-        self.logger.warning("The reply might not be valid: %s", reply)
-        return None
-
-    def get_window_property(self, connection, window, atom):
-        self.logger.debug("Getting property %s from window %s", atom, window)
-        cookie = connection.core.GetProperty(
-            False,
-            window,
-            atom,
-            GetPropertyType.Any,
-            0,
-            2 ** 32 - 1
-        )
-        reply = cookie.reply()
-        return self.get_property_value(reply)
 
     def gather_basics(self):
         self.logger.info('Gathering X connection')

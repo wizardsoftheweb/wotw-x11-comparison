@@ -9,20 +9,17 @@ class BasePointerWindow(HasLogger):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, *args, **kwargs):
-        super(BasePointerWindow, self).__init__(*args, **kwargs)
-
     @abstractmethod
     def gather_basics(self):
-        pass
+        """Placeholder"""
 
     @abstractmethod
     def get_root_window(self, lib_primary, lib_secondary):
-        pass
+        """Placeholder"""
 
     @abstractmethod
     def get_mouse_windows(self, lib_primary, window):
-        pass
+        """Placeholder"""
 
     def get_window_under_pointer(self, lib_primary, window):
         self.logger.silly(
@@ -40,20 +37,22 @@ class BasePointerWindow(HasLogger):
 
     @abstractmethod
     def get_window_names(self, lib_primary, window):
-        pass
+        """Placeholder"""
 
     def parse_names(self, first, second):
         self.logger.debug("Comparing %s and %s", first, second)
         if first:
             if second:
-                if first == second or len(first) > len(second):
+                if len(first) < len(second):
                     self.logger.silly(
-                        'Chose the first; same string or same length'
+                        'Chose the second; same string or same length'
                     )
-                    return first
+                    return second
             self.logger.silly(
-                'Chose the second; first is not equal and shorter'
+                'Chose the first; second is equal or shorter'
             )
+            return first
+        elif second:
             return second
         return ''
 
