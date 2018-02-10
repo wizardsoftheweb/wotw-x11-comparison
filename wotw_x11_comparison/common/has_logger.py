@@ -1,21 +1,14 @@
 # pylint: disable=W,C,R
 from logging import addLevelName, Formatter, getLogger, INFO, StreamHandler
-from sys import exit as stderr
+from sys import stderr
 
 SILLY = 5
 addLevelName(SILLY, 'SILLY')
-LOGGER = getLogger('wotw-x11-comparison')
 CONSOLE_HANDLER = StreamHandler(stream=stderr)
 CONSOLE_FORMATTER = Formatter(
     '[%(asctime)s][%(name)s][%(levelname)s] %(message)s'
 )
 CONSOLE_HANDLER.setFormatter(CONSOLE_FORMATTER)
-LOGGER.addHandler(CONSOLE_HANDLER)
-LOGGER.silly = (
-    lambda message, *args, **kwargs:
-    LOGGER.log(SILLY, message, *args, **kwargs)
-)
-LOGGER.setLevel(INFO)
 
 
 class HasLogger(object):
@@ -27,7 +20,7 @@ class HasLogger(object):
     ):
         self.logger = getLogger(logger_name)
         self.logger.addHandler(CONSOLE_HANDLER)
-        self.logger.silly(
+        self.logger.silly = (
             lambda message, *args, **kwargs:
             self.logger.log(SILLY, message, *args, **kwargs)
         )
