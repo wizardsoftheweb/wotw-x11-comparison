@@ -9,6 +9,8 @@ from wotw_x11_comparison.pointer_window import BasePointerWindow
 
 class XcbPointerWindow(BasePointerWindow):
 
+    library = 'xcb'
+
     def get_property_value(self, reply):
         self.logger.debug("Attempting to parse %s's value", reply)
         if isinstance(reply, GetPropertyReply):
