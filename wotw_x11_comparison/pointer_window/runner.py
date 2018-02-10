@@ -1,6 +1,6 @@
 """This file provides PointerWindowComparison"""
 
-from xcb import connect
+from xcffib import connect
 
 from wotw_x11_comparison.common import RunsComparisons
 

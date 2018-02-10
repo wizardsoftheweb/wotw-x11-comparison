@@ -1,7 +1,7 @@
 """This file provides UsesXcbWindowProperties"""
 
 from struct import unpack
-from xcb.xproto import GetPropertyReply, GetPropertyType
+from xcffib.xproto import GetPropertyReply, GetPropertyType
 
 from wotw_x11_comparison.common import HasLogger
 

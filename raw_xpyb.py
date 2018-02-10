@@ -6,9 +6,8 @@ import csv
 from os import path
 import random
 import struct
-import xcb
-from xcb.xproto import *
-from xcb import Extension
+import xcffib
+from xcffib.xproto import *
 from logging import addLevelName, Formatter, getLogger, INFO, StreamHandler
 from sys import exit as sys_exit, stderr
 from time import time as time_now
@@ -71,7 +70,7 @@ def get_window_property(connection, window, atom):
 
 def gather_basics():
     LOGGER.info('Gathering X connection')
-    connection = xcb.connect()
+    connection = xcffib.connect()
     LOGGER.debug("Connection: %s", connection)
     setup = connection.get_setup()
     LOGGER.debug("Setup: %s", setup)
