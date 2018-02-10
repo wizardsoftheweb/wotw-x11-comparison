@@ -1,5 +1,5 @@
 # pylint: disable=wildcard-import
-"""Placeholder"""
+"""This file provides the main module"""
 
 from .common import *
 from .pointer_window import *
