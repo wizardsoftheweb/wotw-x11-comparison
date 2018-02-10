@@ -83,6 +83,8 @@ xcb.xcb_get_setup.argtypes = [POINTER(xcb_connection_t)]
 xcb.xcb_get_setup.restype = POINTER(xcb_setup_t)
 xcb.xcb_setup_roots_iterator.argtypes = [POINTER(xcb_setup_t)]
 xcb.xcb_setup_roots_iterator.restype = xcb_screen_iterator_t
+xcb.xcb_screen_next.argtypes = [POINTER(xcb_screen_iterator_t)]
+xcb.xcb_screen_next.restype = None
 # xcb.screen_of_display.argtypes = [xcb_connection_t, ScreenNumber]
 # xcb.screen_of_display.restype = xcb_screen_t
 
