@@ -1,4 +1,8 @@
-# pylint: disable=W,C,R
+"""
+This file provides XlibPointerWindow as well as Xlib component dependencies
+"""
+# pylint: disable=unused-argument,invalid-name,too-few-public-methods
+# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from ctypes import byref, CDLL, c_char_p, c_int, c_long, c_uint, c_ulong, POINTER, Structure
 
@@ -8,8 +12,10 @@ xlib = CDLL('libX11.so.6')
 
 
 class Display(Structure):
-    # https://github.com/mirror/libX11/blob/libX11-1.6.5/include/X11/Xlib.h#L484
-    # A Display should be treated as opaque by application code
+    """
+    A Display should be treated as opaque by application code
+    @see https://github.com/mirror/libX11/blob/libX11-1.6.5/include/X11/Xlib.h#L484
+    """
     _fields_ = [
         ('_opaque_struct', c_int)
     ]
@@ -27,7 +33,10 @@ IGNORED_FOR_NOW = POINTER(c_int)
 
 
 class XTextProperty(Structure):
-    # https://tronche.com/gui/x/xlib/ICC/client-to-window-manager/converting-string-lists.html
+    """
+    Holds text information
+    @see https://tronche.com/gui/x/xlib/ICC/client-to-window-manager/converting-string-lists.html
+    """
     _fields_ = [
         ('value', c_char_p),
         ('encoding', IGNORED_FOR_NOW),
@@ -37,7 +46,10 @@ class XTextProperty(Structure):
 
 
 class XWindowAttributes(Structure):
-    # https://tronche.com/gui/x/xlib/window-information/XGetWindowAttributes.html
+    """
+    Holds window attributes
+    @see https://tronche.com/gui/x/xlib/window-information/XGetWindowAttributes.html
+    """
     _fields_ = [
         ('x', Coordinate),
         ('y', Coordinate),
@@ -122,10 +134,14 @@ xlib.XGetWMIconName.restype = c_int
 
 
 class XlibPointerWindow(BasePointerWindow):
+    """
+    This class uses Xlib to determine the window beneath the pointer
+    """
 
     library = 'xlib'
 
     def gather_basics(self):
+        """Sets up the display and screen"""
         self.logger.info('Gathering display and root window')
         display = xlib.XOpenDisplay(None)
         self.logger.debug("Display: %s", display)
@@ -134,11 +150,13 @@ class XlibPointerWindow(BasePointerWindow):
         return [display, screen]
 
     def get_root_window(self, lib_primary, lib_secondary):
+        """Pulls the root window"""
         root_window = xlib.XRootWindow(lib_primary, lib_secondary)
         self.logger.debug("Root Window: %s", root_window)
         return root_window
 
     def get_mouse_windows(self, lib_primary, window):
+        """Finds the children of window beneath the pointer (if any)"""
         self.logger.debug(
             "Determining mouse position relative to window %s",
             window
@@ -161,6 +179,7 @@ class XlibPointerWindow(BasePointerWindow):
         return [root_reference.value, parent_reference.value]
 
     def get_window_names(self, lib_primary, window):
+        """Gets WM_NAME and WM_ICON_NAME for the specified window"""
         self.logger.debug("Naming window %s", window)
         name = c_char_p()
         xlib.XFetchName(lib_primary, window, byref(name))
