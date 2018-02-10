@@ -4,7 +4,12 @@ from __future__ import print_function
 
 from ctypes import *
 
+import resource
+
 xcb = CDLL('libxcb.so.1')
+free = CDLL('./libfree-mem.so')
+print('Memory usage: %s (kb)' %
+      resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
 
 
 class GenericCookie(Structure):
@@ -106,6 +111,10 @@ class xcb_generic_error_t(Structure):
         ('pad', uint32_t * 5),
         ('full_sequence', uint32_t),
     ]
+
+    def __del__(self):
+        if self._b_needsfree_ == 1:
+            free.free_mem(byref(self))
 
 xcb_atom_t = uint32_t
 
@@ -221,6 +230,10 @@ class xcb_get_property_reply_t(Structure):
         ('pad0', uint8_t * 12)
     ]
 
+    def __del__(self):
+        if self._b_needsfree_ == 1:
+            free.free_mem(byref(self))
+
 xcb_query_tree_cookie_t = GenericCookie
 
 
@@ -235,6 +248,12 @@ class xcb_query_tree_reply_t(Structure):
         ('children_len', uint16_t),
         ('pad1', uint8_t * 14)
     ]
+
+    def __del__(self):
+        print('killing self')
+        if self._b_needsfree_ == 1:
+            # print('freeing pointers')
+            free.free_mem(byref(self))
 
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
@@ -307,7 +326,6 @@ CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
 ROOT_WINDOW = DEFAULT_SCREEN.contents.root
 # COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
-ERROR_LIST = None
 # REPLY = xcb.xcb_query_pointer_reply(CONNECTION, COOKIE, ERROR_LIST)
 # print(REPLY.contents.response_type)
 # COOKIE = xcb.xcb_get_property(
@@ -321,6 +339,45 @@ ERROR_LIST = None
 # )
 # REPLY = xcb.xcb_get_property_reply(CONNECTION, COOKIE, ERROR_LIST)
 # print(xcb.xcb_get_property_value_length(REPLY))
+ERROR_LIST = POINTER(xcb_generic_error_t)()
 TREE_COOKIE = xcb.xcb_query_tree(CONNECTION, ROOT_WINDOW)
 TREE_REPLY = xcb.xcb_query_tree_reply(CONNECTION, TREE_COOKIE, ERROR_LIST)
-print(xcb.xcb_query_tree_children_length(TREE_REPLY))
+NUMBER_OF_CHILDREN = xcb.xcb_query_tree_children_length(TREE_REPLY)
+CHILDREN = xcb.xcb_query_tree_children(TREE_REPLY)
+
+
+def nuke_object(object_pointer):
+    free.free_mem(object_pointer)
+
+
+def get_window_reply(window):
+    error_list = POINTER(xcb_generic_error_t)()
+    cookie = xcb.xcb_get_property(
+        CONNECTION,
+        0,
+        window,
+        XCB_ATOM_WM_NAME,
+        XCB_ATOM_STRING,
+        0,
+        0
+    )
+    reply = xcb.xcb_get_property_reply(CONNECTION, cookie, error_list)
+    print(reply.contents.length)
+    if error_list:
+        print(error_list.contents.error_code)
+        return None
+    print('Memory usage: %s (kb)' %
+          resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+
+
+# for index in range(0, NUMBER_OF_CHILDREN):
+for index in range(0, 150):
+    get_window_reply(CHILDREN[index])
+    # NAME_REPLY.contents.__del__()
+    # free.free_mem(NAME_REPLY.contents)
+    # print(NAME_REPLY._b_needsfree_)
+    # NAME_LENGTH = xcb.xcb_get_property_value_length(NAME_REPLY)
+
+    # print('Number %d: ' % index, xcb.xcb_get_property_value_length(NAME_REPLY))
+print('Memory usage: %s (kb)' %
+      resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
