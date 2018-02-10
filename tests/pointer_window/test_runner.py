@@ -86,3 +86,22 @@ class RunSingleTrialOneLibraryUnitTests(PointerWindowComparisonTestCase):
             'win_y': 3,
         }
         mock_write.assert_called_once_with(expected)
+
+
+class RunSingleTrialAllLibrariesUnitTests(PointerWindowComparisonTestCase):
+    LIBRARY_ONE = MagicMock
+    LIBRARY_TWO = MagicMock
+    LIBRARY_THREE = MagicMock
+    LIBRARIES = [LIBRARY_ONE, LIBRARY_TWO, LIBRARY_THREE]
+
+    @patch.object(
+        PointerWindowComparison,
+        'run_single_trial_one_library',
+    )
+    def test_results(self, mock_run):
+        self.runner.LIBRARIES = self.LIBRARIES
+        self.runner.run_single_trial_all_libraries()
+        self.assertEquals(
+            len(self.LIBRARIES),
+            mock_run.call_count
+        )
