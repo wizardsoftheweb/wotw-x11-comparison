@@ -5,6 +5,7 @@ from __future__ import print_function
 from unittest import TestCase
 
 from mock import call, MagicMock, patch
+from xcb.xproto import Atom
 
 from wotw_x11_comparison.pointer_window import XcbPointerWindow
 
@@ -82,4 +83,22 @@ class GetMouseWindowsUnitTests(XcbPointerWindowTestCase):
         mock_holder.assert_has_calls([
             call.QueryPointer(self.ROOT_WINDOW),
             call.QueryPointer().reply()
+        ])
+
+
+class GetWindowNamesUnitTests(XcbPointerWindowTestCase):
+
+    def test_calls(self):
+        self.window.get_window_names(self.PRIMARY, self.ROOT_WINDOW)
+        self.mock_get_window_property.assert_has_calls([
+            call(
+                self.PRIMARY,
+                self.ROOT_WINDOW,
+                Atom.WM_NAME
+            ),
+            call(
+                self.PRIMARY,
+                self.ROOT_WINDOW,
+                Atom.WM_ICON_NAME
+            ),
         ])
