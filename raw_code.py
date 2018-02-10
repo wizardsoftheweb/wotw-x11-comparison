@@ -6,6 +6,12 @@ from ctypes import *
 
 xcb = CDLL('libxcb.so.1')
 
+
+class GenericCookie(Structure):
+    _fields_ = [
+        ('sequence', c_uint)
+    ]
+
 int16_t = c_int16
 uint8_t = c_uint8
 uint16_t = c_uint16
@@ -181,12 +187,7 @@ def screen_of_display(xcb_connection, xcb_screen_number):
         xcb.xcb_screen_next(iterator)
     return None
 
-
-class xcb_query_pointer_cookie_t(Structure):
-    _fields_ = [
-        ('sequence', c_uint)
-    ]
-
+xcb_query_pointer_cookie_t = GenericCookie
 
 # class xcb_query_pointer_request_t(Structure):
 #     _fields_ = [
@@ -195,6 +196,7 @@ class xcb_query_pointer_cookie_t(Structure):
 #         ('length', uint16_t),
 #         ('window', xcb_window_t),
 #     ]
+
 
 class xcb_query_pointer_reply_t(Structure):
     _fields_ = [
@@ -212,11 +214,7 @@ class xcb_query_pointer_reply_t(Structure):
         ('pad0', uint8_t * 2)
     ]
 
-
-class xcb_get_property_cookie_t(Structure):
-    _fields_ = [
-        ('sequence', c_uint)
-    ]
+xcb_get_property_cookie_t = GenericCookie
 
 
 class xcb_get_property_reply_t(Structure):
