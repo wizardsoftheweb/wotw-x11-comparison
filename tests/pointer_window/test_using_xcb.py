@@ -11,10 +11,17 @@ from wotw_x11_comparison.pointer_window import XcbPointerWindow
 
 class XcbPointerWindowTestCase(TestCase):
     ROOT_WINDOW = 14
+    CHILD_WINDOW = 77
     ROOTS = [MagicMock(root=ROOT_WINDOW)]
     SECONDARY = MagicMock(roots=ROOTS)
-
-    PRIMARY = MagicMock(get_setup=MagicMock(return_value=SECONDARY))
+    QUERY_POINTER_REPLY = MagicMock(
+        return_value=[ROOT_WINDOW, CHILD_WINDOW]
+    )
+    QUERY_POINTER = MagicMock(reply=QUERY_POINTER_REPLY)
+    PRIMARY = MagicMock(
+        core=MagicMock(QueryPointer=QUERY_POINTER),
+        get_setup=MagicMock(return_value=SECONDARY)
+    )
 
     WM_NAME = 'qqq'
 
@@ -61,3 +68,18 @@ class GetRootWindowUnitTests(XcbPointerWindowTestCase):
             self.ROOT_WINDOW,
             self.window.get_root_window(self.PRIMARY, self.SECONDARY)
         )
+
+
+class GetMouseWindowsUnitTests(XcbPointerWindowTestCase):
+
+    def test_calls(self):
+        mock_holder = MagicMock()
+        mock_holder.attach_mock(
+            self.QUERY_POINTER,
+            'QueryPointer'
+        )
+        self.window.get_mouse_windows(self.PRIMARY, self.ROOT_WINDOW)
+        mock_holder.assert_has_calls([
+            call.QueryPointer(self.ROOT_WINDOW),
+            call.QueryPointer().reply()
+        ])
