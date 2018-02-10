@@ -120,3 +120,42 @@ class GetWindowPropertyUnitTests(UsesXcbWindowPropertiesTestCase):
             self.ATOM
         )
         mock_prop.assert_called_once()
+
+
+class GetUnknownAtomUnitTests(UsesXcbWindowPropertiesTestCase):
+    ATOM = 'WM_NAME'
+
+    def test_existing_only(self):
+        mock_intern = MagicMock()
+        dummy_core = MagicMock(InternAtom=mock_intern)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_unknown_atom(
+            dummy_connection,
+            self.ATOM,
+            True
+        )
+        mock_intern.assert_has_calls([
+            call(
+                True,
+                len(self.ATOM),
+                self.ATOM
+            ),
+            call().reply()
+        ])
+
+    def test_existing_and_nonexistent(self):
+        mock_intern = MagicMock()
+        dummy_core = MagicMock(InternAtom=mock_intern)
+        dummy_connection = MagicMock(core=dummy_core)
+        self.prop_user.get_unknown_atom(
+            dummy_connection,
+            self.ATOM
+        )
+        mock_intern.assert_has_calls([
+            call(
+                False,
+                len(self.ATOM),
+                self.ATOM
+            ),
+            call().reply()
+        ])
