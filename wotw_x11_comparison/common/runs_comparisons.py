@@ -4,8 +4,11 @@ from time import time as time_now
 from wotw_x11_comparison.common import MovesMouse, WritesResults
 
 
-class RunsComparisons(MovesMouse, WritesResults):
-    # def __init__(self):
+class RunsComparisons(WritesResults, MovesMouse):
+
+    def __init__(self, *args, **kwargs):
+        for base in RunsComparisons.__bases__:
+            base.__init__(self, *args, **kwargs)
 
     @staticmethod
     def benchmark(action_to_benchmark, *args, **kwargs):

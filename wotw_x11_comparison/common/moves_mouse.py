@@ -8,6 +8,9 @@ from wotw_x11_comparison.common import UsesXcbWindowProperties
 
 class MovesMouse(UsesXcbWindowProperties):
 
+    def __init__(self, *args, **kwargs):
+        super(MovesMouse, self).__init__(*args, **kwargs)
+
     def choose_a_random_window(self, connection, root_window):
         _NET_CLIENT_LIST = self.get_unknown_atom(
             connection,

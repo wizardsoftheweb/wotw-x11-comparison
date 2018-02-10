@@ -3,6 +3,8 @@
 from csv import DictWriter, QUOTE_NONNUMERIC
 from os.path import isfile
 
+from sys import exit as sys_exit
+
 
 class WritesResults(object):
     RESULTS_PATH = 'results.csv'

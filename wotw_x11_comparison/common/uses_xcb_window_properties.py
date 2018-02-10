@@ -8,6 +8,9 @@ from wotw_x11_comparison.common import HasLogger
 
 class UsesXcbWindowProperties(HasLogger):
 
+    def __init__(self, *args, **kwargs):
+        super(UsesXcbWindowProperties, self).__init__(*args, **kwargs)
+
     def get_property_value(self, reply):
         self.logger.debug("Attempting to parse %s's value", reply)
         if isinstance(reply, GetPropertyReply):

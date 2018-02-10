@@ -24,4 +24,4 @@ class HasLogger(object):
             lambda message, *args, **kwargs:
             self.logger.log(SILLY, message, *args, **kwargs)
         )
-        self.logger.setLevel(logger_level)
+        self.logger.setLevel(INFO)
