@@ -1,11 +1,11 @@
 from os.path import join
 from setuptools import setup, find_packages
 
-with open(join('wotw_xcb', 'VERSION')) as version_file:
+with open(join('wotw_x11_comparison', 'VERSION')) as version_file:
     __version__ = version_file.read().strip()
 
 setup(
-    name='wotw-xcb',
+    name='wotw-x11-comparison',
     version=__version__,
     packages=find_packages(),
     package_data={
