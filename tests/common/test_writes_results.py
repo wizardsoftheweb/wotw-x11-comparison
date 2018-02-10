@@ -1,4 +1,6 @@
-# pylint: disable=missing-docstring,unused-argument,invalid-name,no-self-use
+# pylint: disable=missing-docstring
+# pylint: disable=unused-argument
+
 from __future__ import print_function
 
 from os.path import join
