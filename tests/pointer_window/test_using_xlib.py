@@ -64,3 +64,16 @@ class GatherBasicsUnitTests(XlibPointerWindowTestCase):
         primary, secondary = self.window.gather_basics()
         self.assertEquals(primary, self.PRIMARY)
         self.assertEquals(secondary, self.SECONDARY)
+
+
+class GetRootWindowUnitTests(XlibPointerWindowTestCase):
+
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.xlib.XRootWindow',
+        return_value=XlibPointerWindowTestCase.ROOT_WINDOW
+    )
+    def test_result(self, mock_get):
+        self.assertEquals(
+            self.ROOT_WINDOW,
+            self.window.get_root_window(self.PRIMARY, self.SECONDARY)
+        )
