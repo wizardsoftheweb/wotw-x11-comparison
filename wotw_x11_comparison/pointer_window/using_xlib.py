@@ -1,8 +1,8 @@
 """
 This file provides XlibPointerWindow as well as Xlib component dependencies
 """
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
+# pylint: disable=invalid-name
+# pylint: disable=too-few-public-methods
 
 from ctypes import byref, CDLL, c_char_p, c_int, c_long, c_uint, c_ulong, POINTER, Structure
 
@@ -165,7 +165,7 @@ class XlibPointerWindow(BasePointerWindow):
         (root_x, root_y) = (Coordinate(), Coordinate())
         (win_x, win_y) = (Coordinate(), Coordinate())
         mask = c_ulong()
-        result = xlib.XQueryPointer(
+        xlib.XQueryPointer(
             lib_primary,
             window,
             byref(root_reference),
