@@ -93,6 +93,21 @@ def screen_of_display(xcb_connection, xcb_screen_number):
         xcb.xcb_screen_next(iterator)
     return None
 
+
+class xcb_query_pointer_cookie_t(Structure):
+    _fields_ = [
+        ('sequence', c_uint)
+    ]
+
+
+# class xcb_query_pointer_request_t(Structure):
+#     _fields_ = [
+#         ('major_opcode', uint8_t),
+#         ('pad0', uint8_t),
+#         ('length', uint16_t),
+#         ('window', xcb_window_t),
+#     ]
+
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
 xcb.xcb_get_setup.argtypes = [POINTER(xcb_connection_t)]
@@ -101,7 +116,12 @@ xcb.xcb_setup_roots_iterator.argtypes = [POINTER(xcb_setup_t)]
 xcb.xcb_setup_roots_iterator.restype = xcb_screen_iterator_t
 xcb.xcb_screen_next.argtypes = [POINTER(xcb_screen_iterator_t)]
 xcb.xcb_screen_next.restype = None
+xcb.xcb_query_pointer.argtypes = [POINTER(xcb_connection_t), xcb_window_t]
+xcb.xcb_query_pointer.restype = xcb_query_pointer_cookie_t
 
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
-SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
+DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
+ROOT_WINDOW = DEFAULT_SCREEN.contents.root
+COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
+print(COOKIE.sequence)
