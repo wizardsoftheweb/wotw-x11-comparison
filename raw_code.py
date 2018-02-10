@@ -150,6 +150,19 @@ class xcb_get_property_cookie_t(Structure):
         ('sequence', c_uint)
     ]
 
+
+class xcb_get_property_reply_t(Structure):
+    _fields_ = [
+        ('response_type', uint8_t),
+        ('format', uint8_t),
+        ('sequence', uint16_t),
+        ('length', uint32_t),
+        ('type', xcb_atom_t),
+        ('bytes_after', uint32_t),
+        ('value_len', uint32_t),
+        ('pad0', uint8_t * 12)
+    ]
+
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
 xcb.xcb_connect.restype = POINTER(xcb_connection_t)
 
@@ -183,12 +196,19 @@ xcb.xcb_get_property.argtypes = [
 ]
 xcb.xcb_get_property.restype = xcb_get_property_cookie_t
 
+xcb.xcb_get_property_reply.argtypes = [
+    POINTER(xcb_connection_t),
+    xcb_get_property_cookie_t,
+    POINTER(POINTER(xcb_generic_error_t))
+]
+xcb.xcb_get_property_reply.restype = POINTER(xcb_get_property_reply_t)
+
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
 ROOT_WINDOW = DEFAULT_SCREEN.contents.root
 # COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
-# ERROR_LIST = None
+ERROR_LIST = None
 # REPLY = xcb.xcb_query_pointer_reply(CONNECTION, COOKIE, ERROR_LIST)
 # print(REPLY.contents.response_type)
 COOKIE = xcb.xcb_get_property(
@@ -200,4 +220,5 @@ COOKIE = xcb.xcb_get_property(
     0,
     1
 )
-print(COOKIE)
+REPLY = xcb.xcb_get_property_reply(CONNECTION, COOKIE, ERROR_LIST)
+print(REPLY)
