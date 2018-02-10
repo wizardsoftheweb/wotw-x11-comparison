@@ -149,10 +149,15 @@ xcb.xcb_screen_next.argtypes = [POINTER(xcb_screen_iterator_t)]
 xcb.xcb_screen_next.restype = None
 xcb.xcb_query_pointer.argtypes = [POINTER(xcb_connection_t), xcb_window_t]
 xcb.xcb_query_pointer.restype = xcb_query_pointer_cookie_t
+xcb.xcb_query_pointer_reply.argtypes = [POINTER(
+    xcb_connection_t), xcb_query_pointer_cookie_t, POINTER(POINTER(xcb_generic_error_t))]
+xcb.xcb_query_pointer_reply.restype = POINTER(xcb_query_pointer_reply_t)
 
 DEFAULT_SCREEN_NUMBER = ScreenNumber()
 CONNECTION = xcb.xcb_connect(None, byref(DEFAULT_SCREEN_NUMBER))
 DEFAULT_SCREEN = screen_of_display(CONNECTION, DEFAULT_SCREEN_NUMBER)
 ROOT_WINDOW = DEFAULT_SCREEN.contents.root
 COOKIE = xcb.xcb_query_pointer(CONNECTION, ROOT_WINDOW)
-print(COOKIE.sequence)
+ERROR_LIST = None
+REPLY = xcb.xcb_query_pointer_reply(CONNECTION, COOKIE, ERROR_LIST)
+print(REPLY.contents.response_type)
