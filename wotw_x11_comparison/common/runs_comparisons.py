@@ -1,6 +1,5 @@
 """This file provides RunsComparisons"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
+
 from time import time as time_now
 
 from wotw_x11_comparison.common import MovesMouse, WritesResults

@@ -1,6 +1,4 @@
 """This file provides PointerWindowComparison"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from xcb import connect
 

@@ -1,6 +1,6 @@
 """This file provides MovesMouse"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
+# pylint: disable=invalid-name
+# pylint: disable=protected-access
 
 from random import randint
 from xcb.xproto import Atom

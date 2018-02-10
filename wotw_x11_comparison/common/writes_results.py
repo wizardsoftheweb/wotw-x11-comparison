@@ -1,11 +1,7 @@
 """This file provides WritesResults"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from csv import DictWriter, QUOTE_NONNUMERIC
 from os.path import isfile
-
-from sys import exit as sys_exit
 
 
 class WritesResults(object):

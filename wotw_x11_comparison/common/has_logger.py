@@ -1,6 +1,6 @@
 """This file provides HasLogger"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
+# pylint: disable=too-few-public-methods
+
 from logging import addLevelName, Formatter, getLogger, INFO, StreamHandler
 from sys import stderr
 

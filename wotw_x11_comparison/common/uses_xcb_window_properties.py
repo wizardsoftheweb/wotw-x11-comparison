@@ -1,6 +1,4 @@
 """This file provides UsesXcbWindowProperties"""
-# pylint: disable=unused-argument,invalid-name,too-few-public-methods
-# pylint: disable=no-self-use,protected-access,unused-import,too-many-arguments
 
 from struct import unpack
 from xcb.xproto import GetPropertyReply, GetPropertyType
@@ -53,7 +51,8 @@ class UsesXcbWindowProperties(HasLogger):
         reply = cookie.reply()
         return self.get_property_value(reply)
 
-    def get_unknown_atom(self, connection, atom, exists_only=False):
+    @staticmethod
+    def get_unknown_atom(connection, atom, exists_only=False):
         """Finds the number for an unknown atom"""
         cookie = connection.core.InternAtom(
             exists_only,
@@ -63,11 +62,13 @@ class UsesXcbWindowProperties(HasLogger):
         reply = cookie.reply()
         return reply.atom
 
-    def get_window_geometry(self, connection, window):
+    @staticmethod
+    def get_window_geometry(connection, window):
         """Gets the window geometry"""
         cookie = connection.core.GetGeometry(window)
         return cookie.reply()
 
-    def get_pointer_position(self, connection, window):
+    @staticmethod
+    def get_pointer_position(connection, window):
         """Gets the pointer position"""
         return connection.core.QueryPointer(window).reply()
