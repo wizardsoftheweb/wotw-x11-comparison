@@ -26,7 +26,7 @@ class xcb_generic_error_t(Structure):
         ('minor_code', uint16_t),
         ('major_code', uint8_t),
         ('pad0', uint8_t),
-        ('pad', uint32_t),
+        ('pad', uint32_t * 5),
         ('full_sequence', uint32_t),
     ]
 
@@ -60,7 +60,7 @@ class xcb_setup_t(Structure):
         ('bitmap_format_scanline_pad', uint8_t),
         ('min_keycode', IGNORED_FOR_NOW),
         ('max_keycode', IGNORED_FOR_NOW),
-        ('pad1', uint8_t),
+        ('pad1', uint8_t * 4),
     ]
 
 
@@ -136,7 +136,7 @@ class xcb_query_pointer_reply_t(Structure):
         ('win_x', int16_t),
         ('win_y', int16_t),
         ('mask', uint16_t),
-        ('pad0', uint8_t)
+        ('pad0', uint8_t * 2)
     ]
 
 xcb.xcb_connect.argtypes = [DisplayName, POINTER(ScreenNumber)]
