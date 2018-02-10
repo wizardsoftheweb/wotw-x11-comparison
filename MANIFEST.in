@@ -1,5 +1,5 @@
-include wotw_xcb/*.py
-include wotw_xcb/VERSION
+include wotw_x11_comparison/*.py
+include wotw_x11_comparison/VERSION
 include LICENSE
 include README.md
 include tox.ini
