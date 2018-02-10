@@ -9,9 +9,6 @@ class BasePointerWindow(HasLogger):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, *args, **kwargs):
-        super(BasePointerWindow, self).__init__(*args, **kwargs)
-
     @abstractmethod
     def gather_basics(self):
         """Placeholder"""
