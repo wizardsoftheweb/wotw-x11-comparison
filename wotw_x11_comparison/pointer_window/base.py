@@ -67,3 +67,4 @@ class BasePointerWindow(HasLogger):
         names = self.get_window_names(lib_primary, window)
         probable_window_name = self.parse_names(*names)
         self.logger.info("Picked %s", probable_window_name)
+        return [window, probable_window_name]
