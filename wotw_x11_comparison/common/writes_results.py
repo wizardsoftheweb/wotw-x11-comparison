@@ -4,7 +4,7 @@ from csv import DictWriter, QUOTE_NONNUMERIC
 from os.path import isfile
 
 
-class ResultsWriter(object):
+class WritesResults(object):
     RESULTS_PATH = 'results.csv'
     FIELDS = {}
 
