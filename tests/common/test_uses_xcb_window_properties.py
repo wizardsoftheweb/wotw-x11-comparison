@@ -36,6 +36,7 @@ class GetPropertyValueUnitTests(UsesXcbWindowPropertiesTestCase):
     STRING_VALUE = [83, 117, 98, 108, 105, 109, 101, 32, 84, 101, 120, 116]
     STRING_RESULT = 'Sublime Text'
     ARRAY_VALUE = [1, 2, 3]
+    BUFFER_VALUE = MagicMock(buf=MagicMock(return_value=STRING_RESULT))
 
     # def setUp(self):
     #     isinstance_patcher = patch('')
@@ -55,6 +56,17 @@ class GetPropertyValueUnitTests(UsesXcbWindowPropertiesTestCase):
     )
     def test_string_property(self, mock_is):
         reply = MagicMock(format=8, value=self.STRING_VALUE)
+        self.assertEquals(
+            self.STRING_RESULT,
+            self.prop_user.get_property_value(reply)
+        )
+
+    @patch(
+        'wotw_x11_comparison.common.uses_xcb_window_properties.isinstance',
+        return_value=True
+    )
+    def test_buffered_string_property(self, mock_is):
+        reply = MagicMock(format=8, value=self.BUFFER_VALUE)
         self.assertEquals(
             self.STRING_RESULT,
             self.prop_user.get_property_value(reply)

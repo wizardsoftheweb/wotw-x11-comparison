@@ -1,6 +1,7 @@
 """This file provides BasePointerWindow"""
 
 from abc import ABCMeta, abstractmethod
+from time import time as time_now
 
 from wotw_x11_comparison.common import HasLogger
 
@@ -65,15 +66,27 @@ class BasePointerWindow(HasLogger):
             return second
         return ''
 
+    @abstractmethod
+    def gracefully_exit_x(self, lib_primary):
+        """Gracefully disconnects from the X server"""
+
     def find_window(self):
         """Attempts to find the window underneath the pointer"""
+        timing = [time_now()]
         self.logger.info('Launching')
         lib_primary, lib_secondary = self.gather_basics()
+        timing.append(time_now())
         root_window = self.get_root_window(lib_primary, lib_secondary)
+        timing.append(time_now())
         self.logger.info('Beginning search')
         window = self.get_window_under_pointer(lib_primary, root_window)
+        timing.append(time_now())
         self.logger.info("Window candidate is %s", window)
         names = self.get_window_names(lib_primary, window)
+        timing.append(time_now())
         probable_window_name = self.parse_names(*names)
+        timing.append(time_now())
         self.logger.info("Picked %s", probable_window_name)
-        return [window, probable_window_name]
+        self.gracefully_exit_x(lib_primary)
+        timing.append(time_now())
+        return [window, probable_window_name, timing]

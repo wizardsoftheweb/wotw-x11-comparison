@@ -21,8 +21,10 @@ class PointerWindowComparisonTestCase(TestCase):
         return_value=[ROOT_WINDOW, CHILD_WINDOW]
     )
     QUERY_POINTER = MagicMock(reply=QUERY_POINTER_REPLY)
+    DISCONNECT = MagicMock()
     PRIMARY = MagicMock(
         core=MagicMock(QueryPointer=QUERY_POINTER),
+        disconnect=DISCONNECT,
         get_setup=MagicMock(return_value=SECONDARY)
     )
     POSITION = MagicMock(
@@ -45,7 +47,26 @@ class PointerWindowComparisonTestCase(TestCase):
 
 class RunSingleTrialOneLibraryUnitTests(PointerWindowComparisonTestCase):
     LIBRARY = 'xcb'
-    POINTER_WINDOW = MagicMock(library=LIBRARY)
+    POINTER_WINDOW = MagicMock(
+        return_value=MagicMock(
+            library=LIBRARY,
+            find_window=MagicMock(
+                return_value=[
+                    PointerWindowComparisonTestCase.CHILD_WINDOW,
+                    PointerWindowComparisonTestCase.WM_NAME,
+                    [
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME,
+                        PointerWindowComparisonTestCase.RUN_TIME
+                    ]
+                ]
+            )
+        )
+    )
 
     @patch(
         'wotw_x11_comparison.pointer_window.runner.connect',
@@ -61,9 +82,8 @@ class RunSingleTrialOneLibraryUnitTests(PointerWindowComparisonTestCase):
         'get_pointer_position',
         return_value=PointerWindowComparisonTestCase.POSITION
     )
-    @patch.object(
-        PointerWindowComparison,
-        'benchmark',
+    @patch(
+        'wotw_x11_comparison.pointer_window.base.time_now',
         return_value=PointerWindowComparisonTestCase.RUN_TIME
     )
     @patch.object(
@@ -73,7 +93,7 @@ class RunSingleTrialOneLibraryUnitTests(PointerWindowComparisonTestCase):
     def test_results(
             self,
             mock_write,
-            mock_benchmark,
+            mock_time,
             mock_pointer,
             mock_warp,
             mock_connect
@@ -81,12 +101,18 @@ class RunSingleTrialOneLibraryUnitTests(PointerWindowComparisonTestCase):
         self.runner.run_single_trial_one_library(self.POINTER_WINDOW)
         expected = {
             'library': self.LIBRARY,
-            'time': PointerWindowComparisonTestCase.RUN_TIME,
             'root_x': 0,
             'root_y': 1,
             'window': PointerWindowComparisonTestCase.CHILD_WINDOW,
             'win_x': 2,
             'win_y': 3,
+            'start': PointerWindowComparisonTestCase.RUN_TIME,
+            'gather_basics': PointerWindowComparisonTestCase.RUN_TIME,
+            'root_window': PointerWindowComparisonTestCase.RUN_TIME,
+            'recursion': PointerWindowComparisonTestCase.RUN_TIME,
+            'get_names': PointerWindowComparisonTestCase.RUN_TIME,
+            'parse_names': PointerWindowComparisonTestCase.RUN_TIME,
+            'exit': PointerWindowComparisonTestCase.RUN_TIME
         }
         mock_write.assert_called_once_with(expected)
 

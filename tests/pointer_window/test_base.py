@@ -38,6 +38,9 @@ class SimpleWindow(BasePointerWindow):
     def get_window_names(self, lib_primary, window):
         return [self.WM_NAME, self.WM_ICON_NAME]
 
+    def gracefully_exit_x(self, lib_primary):
+        pass
+
 
 class BasePointerWindowTestCase(TestCase):
     PRIMARY = MagicMock()
@@ -146,6 +149,7 @@ class FindWindowUnitTests(BasePointerWindowTestCase):
         return_value=SimpleWindow.CHILD_WINDOW
     )
     def test_result(self, mock_get, mock_parse):
-        window, wm_name = self.window.find_window()
+        window, wm_name, timing = self.window.find_window()
         self.assertEquals(window, SimpleWindow.CHILD_WINDOW)
         self.assertEquals(wm_name, SimpleWindow.WM_NAME)
+        self.assertEquals(len(timing), 7)
