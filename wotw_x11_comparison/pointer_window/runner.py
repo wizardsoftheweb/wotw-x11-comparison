@@ -31,6 +31,7 @@ class PointerWindowComparison(RunsComparisons):
         root_window = setup.roots[0].root
         window = self.warp_to_random_window(connection, root_window)
         position = self.get_pointer_position(connection, window)
+        connection.disconnect()
         run_time = self.benchmark(pointer_window.find_window)
         self.write_result_row({
             'library': pointer_window.library,
