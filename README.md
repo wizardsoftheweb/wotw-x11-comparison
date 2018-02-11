@@ -12,14 +12,14 @@ I built this with Fedora 27. I'd eventually like to throw together some expanded
 
 You'll first need X11. You can generally find it via `libX11`. For active development, some of the protocol headers are very, very useful.
 
-```sh-sesion
+```sh-session
 $ sudo dnf install -y 'libX11*'{,-devel}
 $ sudo dnf install -y xorg-x11-proto-devel
 ```
 
 X11 also has a ton of hardware-specific packages, which makes simple, catchall (and overkill) installations like this hard:
 
-```sh-sesion
+```sh-session
 $ sudo dnf install --skip-broken 'xorg-x11-*'{,-devel}
 ```
 
@@ -31,7 +31,7 @@ I spent a considerable amount of time looking around for a solid and dependable 
 
 You'll first need `XCB`. You can generally find it via `libxcb`. There's a good chance there are also some ancillary packages you might need. On Fedora, you can get everything with something like this:
 
-```sh-sesion
+```sh-session
 $ sudo dnf install -y {libxcb,'xcb-util-*'}{,-devel}
 ```
 
