@@ -140,3 +140,13 @@ class GetWindowNamesUnitTests(XlibPointerWindowTestCase):
         )
         self.assertEquals(wm_name, self.WM_NAME)
         self.assertEquals(wm_icon_name, self.WM_ICON_NAME)
+
+
+class GracefullyExitXUnitTests(XlibPointerWindowTestCase):
+
+    @patch(
+        'wotw_x11_comparison.pointer_window.using_xlib.xlib.XCloseDisplay'
+    )
+    def test_result(self, mock_close):
+        self.window.gracefully_exit_x(self.PRIMARY)
+        mock_close.assert_called_once_with(self.PRIMARY)
