@@ -2,7 +2,7 @@
 
 ## Running
 
-```sh-sesion
+```sh-session
 $ cd path/to/this/directory
 $ ./window-under-pointer
 ```
