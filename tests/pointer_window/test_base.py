@@ -38,6 +38,9 @@ class SimpleWindow(BasePointerWindow):
     def get_window_names(self, lib_primary, window):
         return [self.WM_NAME, self.WM_ICON_NAME]
 
+    def gracefully_exit_x(self, lib_primary):
+        pass
+
 
 class BasePointerWindowTestCase(TestCase):
     PRIMARY = MagicMock()

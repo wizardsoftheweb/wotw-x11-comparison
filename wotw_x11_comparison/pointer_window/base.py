@@ -65,6 +65,10 @@ class BasePointerWindow(HasLogger):
             return second
         return ''
 
+    @abstractmethod
+    def gracefully_exit_x(self, lib_primary):
+        """Gracefully disconnects from the X server"""
+
     def find_window(self):
         """Attempts to find the window underneath the pointer"""
         self.logger.info('Launching')
@@ -76,4 +80,5 @@ class BasePointerWindow(HasLogger):
         names = self.get_window_names(lib_primary, window)
         probable_window_name = self.parse_names(*names)
         self.logger.info("Picked %s", probable_window_name)
+        self.gracefully_exit_x(lib_primary)
         return [window, probable_window_name]
