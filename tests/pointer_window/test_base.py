@@ -149,6 +149,7 @@ class FindWindowUnitTests(BasePointerWindowTestCase):
         return_value=SimpleWindow.CHILD_WINDOW
     )
     def test_result(self, mock_get, mock_parse):
-        window, wm_name = self.window.find_window()
+        window, wm_name, timing = self.window.find_window()
         self.assertEquals(window, SimpleWindow.CHILD_WINDOW)
         self.assertEquals(wm_name, SimpleWindow.WM_NAME)
+        self.assertEquals(len(timing), 7)

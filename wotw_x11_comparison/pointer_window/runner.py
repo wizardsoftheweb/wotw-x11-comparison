@@ -40,9 +40,11 @@ class PointerWindowComparison(RunsComparisons):
         position = self.get_pointer_position(connection, window)
         connection.disconnect()
         pointer_window = library()
+        lib = pointer_window.library
         timing = pointer_window.find_window()[2]
+        del pointer_window
         self.write_result_row({
-            'library': pointer_window.library,
+            'library': lib,
             'root_x': position.root_x,
             'root_y': position.root_y,
             'window': window,
