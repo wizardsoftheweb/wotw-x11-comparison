@@ -20,8 +20,10 @@ class XcbPointerWindowTestCase(TestCase):
         return_value=[ROOT_WINDOW, CHILD_WINDOW]
     )
     QUERY_POINTER = MagicMock(reply=QUERY_POINTER_REPLY)
+    DISCONNECT = MagicMock()
     PRIMARY = MagicMock(
         core=MagicMock(QueryPointer=QUERY_POINTER),
+        disconnect=DISCONNECT,
         get_setup=MagicMock(return_value=SECONDARY)
     )
 
@@ -103,3 +105,10 @@ class GetWindowNamesUnitTests(XcbPointerWindowTestCase):
                 Atom.WM_ICON_NAME
             ),
         ])
+
+
+class GracefullyExitXUnitTests(XcbPointerWindowTestCase):
+
+    def test_calls(self):
+        self.window.gracefully_exit_x(self.PRIMARY)
+        self.DISCONNECT.assert_called_once_with()

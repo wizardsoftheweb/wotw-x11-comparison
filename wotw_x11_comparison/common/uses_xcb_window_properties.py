@@ -20,10 +20,13 @@ class UsesXcbWindowProperties(HasLogger):
         self.logger.debug("Attempting to parse %s's value", reply)
         if isinstance(reply, GetPropertyReply):
             if 8 == reply.format:
-                value = ''
-                for chunk in reply.value:
-                    value += chr(chunk)
-                self.logger.silly("Parsed %s", value)
+                if hasattr(reply.value, 'buf'):
+                    value = str(reply.value.buf())
+                else:
+                    value = ''
+                    for chunk in reply.value:
+                        value += chr(chunk)
+                    self.logger.silly("Parsed %s", value)
                 return value
             elif reply.format in (16, 32):
                 value = list(

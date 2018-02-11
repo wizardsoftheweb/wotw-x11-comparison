@@ -188,3 +188,7 @@ class XlibPointerWindow(BasePointerWindow):
         xlib.XGetWMIconName(lib_primary, window, byref(props))
         self.logger.silly("WM Icon Name: %s", props.value)
         return [name.value, props.value]
+
+    def gracefully_exit_x(self, lib_primary):
+        """Gracefully disconnects from the X server"""
+        xlib.XCloseDisplay(lib_primary)

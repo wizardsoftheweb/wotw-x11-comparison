@@ -50,3 +50,7 @@ class XcbPointerWindow(UsesXcbWindowProperties, BasePointerWindow):
         )
         self.logger.silly("WM Icon Name: %s", wm_icon_name)
         return [wm_name, wm_icon_name]
+
+    def gracefully_exit_x(self, lib_primary):
+        """Gracefully disconnects from the X server"""
+        lib_primary.disconnect()

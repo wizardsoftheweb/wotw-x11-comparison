@@ -13,7 +13,7 @@ from wotw_x11_comparison.pointer_window import PointerWindowComparison
 def cli():
     """Bootstraps the comparison"""
     runner = PointerWindowComparison()
-    runner.run_many_trials()
+    runner.run_many_trials(10000)
 
 if '__main__' == __name__:
     cli()
